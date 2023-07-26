@@ -66,3 +66,38 @@ margin: 5px;
 padding: 20px;
 
 `;
+
+export const Albun = styled.li`
+display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    div{
+        display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 500px;
+    margin-top: 25px;
+    padding: 10px;
+    }
+button{
+    background: none;
+    cursor: pointer;
+    border: none;
+    
+}
+`;
+export const Song = styled.li`
+    display: flex;
+    justify-content: space-between;
+  `;
+
+export const HeaderMusic = styled.div`
+    display: flex;
+    justify-content: space-between;
+  padding: 10px;
+    width: 670px;
+
+    
+  
+
+`;
