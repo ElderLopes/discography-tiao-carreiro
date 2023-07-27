@@ -1,7 +1,8 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import Logo from './assets/logo.png';
 import Trash from './assets/trash.svg';
+
 
 import {
     Container,
@@ -24,69 +25,62 @@ const App = () => {
     const nameAlbum = useRef()
     const ageAlbum = useRef()
 
-    // const [nameTrack, setNameTrack] = useState()
-
-
     async function addNewAlbum() {
-try{
-    const data = { name: 'Teste', years: '2023' }
-    const headers = { Authorization: 'elderfl85@gmail.com' }
-    const response = await axios.post('https://tiao.supliu.com.br/api/album', data , {
+        try {
+            const data = { name: nameAlbum.current.value, year: ageAlbum.current.value }
+            const headers = { Authorization: 'elderfl85@gmail.com' }
+            const response = await axios.post('https://tiao.supliu.com.br/api/album', data, {
                 headers
             });
-        console.log(data);
-        const newAlbumId = response.data.id;
 
-        const newAlbum = {
-            id: newAlbumId,
-            albumName: nameAlbum.current.value,
-            age: ageAlbum.current.value,
-           
-        };
-        setAlbums([...albums, newAlbum]);
-        console.log(newAlbumId);
-    } catch (error) {
-        console.error("Erro ao criar novo álbum:", error);
-      }
+            const newAlbumId = response.data.id;
+
+            const newAlbum = {
+                id: newAlbumId,
+                albumName: nameAlbum.current.value,
+                age: ageAlbum.current.value,
+                songs: []
+            };
+            setAlbums([...albums, newAlbum]);
+        } catch (error) {
+            console.error("Erro ao criar novo álbum:", error);
+        }
     }
-    
+
+    useEffect(() => {
+        async function fetchAlbums() {
+            try {
+                const headers = { Authorization: 'elderfl85@gmail.com' };
+                const { data } = await axios.get('https://tiao.supliu.com.br/api/album', { headers });
 
 
-        
-        // setAlbums([
-        //     ...albums,
-        //      {
-        //     id: Math.random(),
-        //     albumName: nameAlbum.current.value,
-        //     age: ageAlbum.current.value,
-        //     songs: []
-        // },
-        // ])
-     
-    
+                const formattedAlbums = data.data.map(album => ({
+                    id: album.id,
+                    albumName: album.name,
+                    age: album.year,
+                    songs: album.tracks.map(track => ({
+                        number: track.number,
+                        songName: track.title,
+                        time: track.duration
+                    }))
+                }));
 
-    function deleteAlbum(albumsId) {
+                setAlbums(formattedAlbums);
+            } catch (error) {
+                console.error("Erro ao carregar os álbuns:", error);
+            }
+        }
+
+        fetchAlbums();
+    }, []);
+
+    async function deleteAlbum(albumsId) {
+        const headers = { Authorization: 'elderfl85@gmail.com' };
+        await axios.delete(`https://tiao.supliu.com.br/api/album/${albumsId}`, { headers })
         const newAlbum = albums.filter(albums => albums.id !== albumsId)
         setAlbums(newAlbum)
     }
 
-    //   function addNewTrack() {
-
-    //     const newSong = {
-    //       number: albums.length + 1, 
-    //       songName: nameTrack,
-    //       time: "00:00" 
-    //     };
-    //     const updatedAlbums = [...albums];
-    //     updatedAlbums[updatedAlbums.length - 1].songs.push(newSong);
-    //     setAlbums(updatedAlbums);
-    //   }
-
-
-
-    // function changeTrack(event) {
-    //     setNameTrack(event.target.value);
-    // }
     return (
         <Container>
             <ContainerHead>
@@ -100,18 +94,14 @@ try{
                 <H2>Add um Album</H2>
                 <Input ref={nameAlbum} />
                 <H2>Add ano do Album</H2>
-                <Input ref={ageAlbum}/>
+                <Input ref={ageAlbum} />
                 <Button onClick={addNewAlbum} >Adicionar Àlbum</Button>
-                {/* <H2>Add uma Faixa</H2>
-                <Input onChange={changeTrack} />
-                <Button onClick={addNewTrack} >Adicionar Faixa</Button> */}
-
                 <ul>
                     {albums.map((albums) => (
                         <Albun key={albums.id}>
                             <div>
                                 <h4>Álbum: {albums.albumName} - {albums.age}</h4>
-                                <button onClick={() => deleteAlbum(albums.id) }><img src={Trash} alt="lata-de-lixo" /></button>
+                                <button onClick={() => deleteAlbum(albums.id)}><img src={Trash} alt="lata-de-lixo" /></button>
                             </div>
                             <ul>
                                 <HeaderMusic>
