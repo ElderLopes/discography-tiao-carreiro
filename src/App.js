@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import Logo from './assets/logo.png';
 import Trash from './assets/trash.svg';
-
+import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 
 import {
     Container,
@@ -16,12 +16,12 @@ import {
     Albun,
     Song,
     HeaderMusic,
-
-
+    Modal,
 } from './styles'
 
 const App = () => {
     const [albums, setAlbums] = useState([])
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const nameAlbum = useRef()
     const ageAlbum = useRef()
 
@@ -80,6 +80,14 @@ const App = () => {
         const newAlbum = albums.filter(albums => albums.id !== albumsId)
         setAlbums(newAlbum)
     }
+    function openModal() {
+        setIsModalOpen(true);
+    }
+
+
+    function closeModal() {
+        setIsModalOpen(false);
+    }
 
     return (
         <Container>
@@ -89,12 +97,12 @@ const App = () => {
             </ContainerHead>
             <ContainerItens>
                 <H2>Digite uma palavra chave</H2>
-                <Input />
+                <Input type="text" required />
                 <Button>Procurar</Button>
                 <H2>Add um Album</H2>
-                <Input ref={nameAlbum} />
+                <Input ref={nameAlbum} type="text" required />
                 <H2>Add ano do Album</H2>
-                <Input ref={ageAlbum} />
+                <Input ref={ageAlbum} type="number" required   />
                 <Button onClick={addNewAlbum} >Adicionar Àlbum</Button>
                 <ul>
                     {albums.map((albums) => (
@@ -108,6 +116,10 @@ const App = () => {
                                     <h3>Nº</h3>
                                     <h3>Faixa</h3>
                                     <h3>Duração</h3>
+                                    <Button onClick={openModal}>
+                                        <PlaylistAddIcon />
+                                    </Button>
+
                                 </HeaderMusic>
                                 {albums.songs.map((songs) => (
                                     <Song key={songs.number}>
@@ -122,6 +134,18 @@ const App = () => {
                         </Albun>
                     ))}
                 </ul>
+                {isModalOpen && (
+                    <Modal>
+                        <h2>Adicione a faixa musical do álbum</h2>
+                        <h3>Faixa:</h3>
+                        <input type="number" placeholder="Número da faixa" required />
+                        <h3>Nome da Música:</h3>
+                        <input type="text" placeholder="Coloque o nome aqui" required />
+                        <h3>Tempo de Duração (segundos):</h3>
+                        <input type="number" placeholder="Tempo de duração" required />
+                        <button onClick={closeModal}>Salvar Música</button>
+                    </Modal>
+                )}
             </ContainerItens>
         </Container>
     )

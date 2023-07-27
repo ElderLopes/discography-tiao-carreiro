@@ -43,6 +43,7 @@ border-radius: 40px;
 border: none;
 outline: none;
 padding-left: 25px;
+
 `;
 export const Button = styled.button`
 border-radius: 40px;
@@ -96,3 +97,6 @@ export const HeaderMusic = styled.div`
 
 `;
 
+export const Modal = styled.div`
+  /* Seus estilos para o componente modal aqui */
+`;
