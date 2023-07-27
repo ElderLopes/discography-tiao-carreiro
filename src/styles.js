@@ -37,7 +37,7 @@ margin-left: 15px;
 
 `;
 export const Input = styled.input`
-width: 800px;
+width: 600px;
 height: 40px;
 border-radius: 40px;
 border: none;
@@ -61,16 +61,10 @@ cursor: pointer;
 }
 
 `;
-export const Paragrafo = styled.p`
-margin: 5px;
-padding: 20px;
-
-`;
 
 export const Albun = styled.li`
 display: flex;
     flex-direction: column;
-    align-items: flex-start;
     div{
         display: flex;
     justify-content: space-between;
@@ -83,12 +77,15 @@ button{
     background: none;
     cursor: pointer;
     border: none;
+    margin-left: 200px;
     
 }
 `;
 export const Song = styled.li`
     display: flex;
     justify-content: space-between;
+    margin-left: 10px;
+    width: 674px;
   `;
 
 export const HeaderMusic = styled.div`
@@ -97,7 +94,5 @@ export const HeaderMusic = styled.div`
   padding: 10px;
     width: 670px;
 
-    
-  
-
 `;
+
