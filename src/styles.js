@@ -63,7 +63,7 @@ cursor: pointer;
 
 `;
 
-export const Albun = styled.li`
+export const Album = styled.li`
 display: flex;
     flex-direction: column;
     div{
