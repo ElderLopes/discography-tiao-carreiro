@@ -3,6 +3,8 @@ import axios from "axios";
 import Logo from './assets/logo.png';
 import Trash from './assets/trash.svg';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
+import LibraryMusicIcon from '@mui/icons-material/LibraryMusic';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 import {
     Container,
@@ -22,15 +24,23 @@ import {
 const App = () => {
     const [albums, setAlbums] = useState([])
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isAddAlbumModalOpen, setIsAddAlbumModalOpen] = useState(false);
     const [timeInSeconds, setTimeInSeconds] = useState(0);
+    const [selectedAlbum, setSelectedAlbum] = useState(null);
     const [timeInput, setTimeInput] = useState("");
     const nameAlbum = useRef()
     const ageAlbum = useRef()
-    const [selectedAlbum, setSelectedAlbum] = useState(null);
     const numberTrack = useRef()
     const track = useRef()
 
-    //Funcão para add novo album
+    function openAddAlbumModal() {
+        setIsAddAlbumModalOpen(true);
+      }
+    
+      function closeAddAlbumModal(){
+        setIsAddAlbumModalOpen(false);
+      }
+
     async function addNewAlbum() {
         try {
             const data = { name: nameAlbum.current.value, year: ageAlbum.current.value }
@@ -48,6 +58,7 @@ const App = () => {
                 songs: []
             };
             setAlbums([...albums, newAlbum]);
+           
         } catch (error) {
             console.error("Erro ao criar novo álbum:", error);
         }
@@ -129,7 +140,7 @@ const App = () => {
 
             setAlbums(updatedAlbums);
 
-            closeModal();
+           
         } catch (error) {
             console.error("Erro ao salvar a música:", error);
         }
@@ -165,6 +176,11 @@ const App = () => {
             console.error("Erro ao deletar a faixa:", error);
         }
     }
+    function closeModals() {
+        closeModal();
+        closeAddAlbumModal();
+      }
+    
     return (
         <Container>
             <ContainerHead>
@@ -175,11 +191,11 @@ const App = () => {
                 <H2>Digite uma palavra chave</H2>
                 <Input type="text" required />
                 <Button>Procurar</Button>
-                <H2>Add um Album</H2>
-                <Input ref={nameAlbum} type="text" required />
-                <H2>Add ano do Album</H2>
-                <Input ref={ageAlbum} type="number" required />
-                <Button onClick={addNewAlbum} >Adicionar Àlbum</Button>
+                <H2>Adicione um Álbum</H2>
+                <button onClick={openAddAlbumModal}>
+                    <LibraryMusicIcon/>
+                </button>
+    
                 <ul>
                     {albums.map((albums) => (
                         <Album key={albums.id}>
@@ -213,6 +229,9 @@ const App = () => {
                 </ul>
                 {isModalOpen && (
                     <Modal>
+                        <button onClick={closeModals}>
+                <CancelIcon/>
+            </button>
                         <h2>Adicione a faixa musical do álbum</h2>
                         <h3>Faixa:</h3>
                         <input ref={numberTrack} type="number" placeholder="Número da faixa" required />
@@ -232,6 +251,19 @@ const App = () => {
                         <button onClick={saveTrack}>Salvar Música</button>
                     </Modal>
                 )}
+                {isAddAlbumModalOpen && (
+          <Modal>
+            <button onClick={closeModals}>
+                <CancelIcon/>
+            </button>
+            <h2>Adicione um novo álbum</h2>
+            <h3>Nome do álbum:</h3>
+            <input ref={nameAlbum} type="text" placeholder="Nome do álbum" required />
+            <h3>Ano do álbum:</h3>
+            <input ref={ageAlbum} type="number" placeholder="Ano do álbum" required />
+            <button onClick={addNewAlbum}>Salvar Álbum</button>
+          </Modal>
+        )}
             </ContainerItens>
         </Container >
     )
