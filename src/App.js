@@ -35,11 +35,11 @@ const App = () => {
 
     function openAddAlbumModal() {
         setIsAddAlbumModalOpen(true);
-      }
-    
-      function closeAddAlbumModal(){
+    }
+
+    function closeAddAlbumModal() {
         setIsAddAlbumModalOpen(false);
-      }
+    }
 
     async function addNewAlbum() {
         try {
@@ -58,7 +58,7 @@ const App = () => {
                 songs: []
             };
             setAlbums([...albums, newAlbum]);
-           
+            closeAddAlbumModal()
         } catch (error) {
             console.error("Erro ao criar novo álbum:", error);
         }
@@ -139,8 +139,8 @@ const App = () => {
             });
 
             setAlbums(updatedAlbums);
+            closeModal()
 
-           
         } catch (error) {
             console.error("Erro ao salvar a música:", error);
         }
@@ -172,6 +172,7 @@ const App = () => {
             });
 
             setAlbums(updatedAlbums);
+
         } catch (error) {
             console.error("Erro ao deletar a faixa:", error);
         }
@@ -179,8 +180,8 @@ const App = () => {
     function closeModals() {
         closeModal();
         closeAddAlbumModal();
-      }
-    
+    }
+
     return (
         <Container>
             <ContainerHead>
@@ -191,11 +192,12 @@ const App = () => {
                 <H2>Digite uma palavra chave</H2>
                 <Input type="text" required />
                 <Button>Procurar</Button>
-                <H2>Adicione um Álbum</H2>
-                <button onClick={openAddAlbumModal}>
-                    <LibraryMusicIcon/>
-                </button>
-    
+                <div id="divAddAlbum">
+                    <H2>Adicione um Álbum</H2>
+                    <button id="addAlbum" onClick={openAddAlbumModal}>
+                        <LibraryMusicIcon />
+                    </button>
+                </div>
                 <ul>
                     {albums.map((albums) => (
                         <Album key={albums.id}>
@@ -203,25 +205,29 @@ const App = () => {
                                 <h4>Álbum: {albums.albumName} - {albums.age}</h4>
                                 <button onClick={() => deleteAlbum(albums.id)}><img src={Trash} alt="lata-de-lixo" /></button>
                             </div>
+                           
                             <ul>
                                 <HeaderMusic>
-                                    <h3>Nº</h3>
-                                    <h3>Faixa</h3>
-                                    <h3>Duração</h3>
-                                    <Button onClick={() => openModal(albums)}>
-                                        <PlaylistAddIcon />
-                                    </Button>
-
+                                    <div id="divTrack">
+                                        <h3>Nº</h3>
+                                        <h3>Faixa</h3>
+                                        <h3>Duração</h3>
+                                        <Button id="addTrack" onClick={() => openModal(albums)}>
+                                            <PlaylistAddIcon />
+                                        </Button>
+                                    </div>
                                 </HeaderMusic>
                                 {albums.songs.map((songs) => (
                                     <Song key={songs.number}>
                                         <p>{songs.number}</p>
                                         <p>{songs.songName}</p>
                                         <p>{formatTime(songs.time)}</p>
-                                        <button onClick={() => deleteTrack(albums.id, songs.id)}>
+                                        <button  onClick={() => deleteTrack(albums.id, songs.id)}>
                                             <img src={Trash} alt="lata-de-lixo" />
                                         </button>
+                                        
                                     </Song>
+                                    
                                 ))}
                             </ul>
                         </Album>
@@ -229,9 +235,9 @@ const App = () => {
                 </ul>
                 {isModalOpen && (
                     <Modal>
-                        <button onClick={closeModals}>
-                <CancelIcon/>
-            </button>
+                        <button className="buttonClose" onClick={closeModals}>
+                            <CancelIcon />
+                        </button>
                         <h2>Adicione a faixa musical do álbum</h2>
                         <h3>Faixa:</h3>
                         <input ref={numberTrack} type="number" placeholder="Número da faixa" required />
@@ -248,22 +254,22 @@ const App = () => {
                             placeholder="Tempo de duração"
                             required
                         />
-                        <button onClick={saveTrack}>Salvar Música</button>
+                        <button className="buttonSave" onClick={saveTrack}>Salvar Música</button>
                     </Modal>
                 )}
                 {isAddAlbumModalOpen && (
-          <Modal>
-            <button onClick={closeModals}>
-                <CancelIcon/>
-            </button>
-            <h2>Adicione um novo álbum</h2>
-            <h3>Nome do álbum:</h3>
-            <input ref={nameAlbum} type="text" placeholder="Nome do álbum" required />
-            <h3>Ano do álbum:</h3>
-            <input ref={ageAlbum} type="number" placeholder="Ano do álbum" required />
-            <button onClick={addNewAlbum}>Salvar Álbum</button>
-          </Modal>
-        )}
+                    <Modal>
+                        <button className="buttonClose" onClick={closeModals}>
+                            <CancelIcon />
+                        </button>
+                        <h2>Adicione um novo álbum</h2>
+                        <h3>Nome do álbum:</h3>
+                        <input ref={nameAlbum} type="text" placeholder="Nome do álbum" required />
+                        <h3>Ano do álbum:</h3>
+                        <input ref={ageAlbum} type="number" placeholder="Ano do álbum" required />
+                        <button className="buttonSave" onClick={addNewAlbum}>Salvar Álbum</button>
+                    </Modal>
+                )}
             </ContainerItens>
         </Container >
     )
