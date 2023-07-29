@@ -28,6 +28,7 @@ const App = () => {
     const [timeInSeconds, setTimeInSeconds] = useState(0);
     const [selectedAlbum, setSelectedAlbum] = useState(null);
     const [timeInput, setTimeInput] = useState("");
+    const [searchKeyword, setSearchKeyword] = useState("");
     const nameAlbum = useRef()
     const ageAlbum = useRef()
     const numberTrack = useRef()
@@ -63,6 +64,33 @@ const App = () => {
             console.error("Erro ao criar novo álbum:", error);
         }
     }
+    async function handleSearch() {
+        try {
+            const headers = { Authorization: 'elderfl85@gmail.com' };
+            const { data } = await axios.get('https://tiao.supliu.com.br/api/album', { headers });
+
+            const formattedAlbums = data.data.map(album => ({
+                id: album.id,
+                albumName: album.name,
+                age: album.year,
+                songs: album.tracks.map(track => ({
+                    id: track.id,
+                    number: track.number,
+                    songName: track.title,
+                    time: track.duration
+                }))
+            }));
+            const filteredAlbums = formattedAlbums.filter(album => {
+                const albumNameMatch = album.albumName.toLowerCase().includes(searchKeyword.toLowerCase());
+                const songsMatch = album.songs.some(song => song.songName.toLowerCase().includes(searchKeyword.toLowerCase()));
+                return albumNameMatch || songsMatch;
+            });
+
+            setAlbums(filteredAlbums);
+        } catch (error) {
+            console.error("Erro ao carregar os álbuns:", error);
+        }
+    }
 
     useEffect(() => {
         async function fetchAlbums() {
@@ -90,8 +118,8 @@ const App = () => {
         }
 
         fetchAlbums();
-    }, []);
-
+    }, [searchKeyword]);
+    
     async function deleteAlbum(albumsId) {
         const headers = { Authorization: 'elderfl85@gmail.com' };
         await axios.delete(`https://tiao.supliu.com.br/api/album/${albumsId}`, { headers })
@@ -182,6 +210,8 @@ const App = () => {
         closeAddAlbumModal();
     }
 
+
+
     return (
         <Container>
             <ContainerHead>
@@ -190,8 +220,13 @@ const App = () => {
             </ContainerHead>
             <ContainerItens>
                 <H2>Digite uma palavra chave</H2>
-                <Input type="text" required />
-                <Button>Procurar</Button>
+                <Input
+                    type="text"
+                    value={searchKeyword}
+                    onChange={(e) => setSearchKeyword(e.target.value)}
+                    placeholder="Digite uma palavra chave"
+                />
+                <Button onClick={handleSearch}>Procurar</Button>
                 <div id="divAddAlbum">
                     <H2>Adicione um Álbum</H2>
                     <button id="addAlbum" onClick={openAddAlbumModal}>
@@ -205,7 +240,7 @@ const App = () => {
                                 <h4>Álbum: {albums.albumName} - {albums.age}</h4>
                                 <button onClick={() => deleteAlbum(albums.id)}><img src={Trash} alt="lata-de-lixo" /></button>
                             </div>
-                           
+
                             <ul>
                                 <HeaderMusic>
                                     <div id="divTrack">
@@ -222,12 +257,12 @@ const App = () => {
                                         <p>{songs.number}</p>
                                         <p>{songs.songName}</p>
                                         <p>{formatTime(songs.time)}</p>
-                                        <button  onClick={() => deleteTrack(albums.id, songs.id)}>
+                                        <button onClick={() => deleteTrack(albums.id, songs.id)}>
                                             <img src={Trash} alt="lata-de-lixo" />
                                         </button>
-                                        
+
                                     </Song>
-                                    
+
                                 ))}
                             </ul>
                         </Album>

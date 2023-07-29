@@ -20,9 +20,9 @@ const sharedButtonStyles = `
 export const Container = styled.div`
   background: url(${Background});
   background-size: cover;
-  height: 100vh;
-  padding: 100px;
- 
+    height: max-content;
+    min-height: 100vh;
+    padding: 100px;
 `;
 
 export const ContainerHead = styled.div`
